@@ -1,6 +1,8 @@
 package main
 
-import "github.com/alexpantyukhin/combinations"
+import (
+	"github.com/alexpantyukhin/combinations"
+)
 
 var rotors = []interface{}{"I", "II", "III", "IV", "V"}
 var positions = []interface{}{"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"}
@@ -11,6 +13,10 @@ type ValuesString struct {
 	V1 string
 	V2 string
 	V3 string
+}
+
+func (values ValuesString) toString() string {
+	return values.V1 + " " + values.V2 + " " + values.V3
 }
 
 //ValuesInt :

@@ -12,43 +12,50 @@ type Result struct {
 	text   string
 }
 
-func calculateIc(cipher string, permsRotor ValuesString, outputIc chan Result) {
+func calculateIc(cipher, reflector string, permsRotor ValuesString, outputIc chan Result) {
 	permsPosition := genAllPosition()
+	cleanText(&cipher)
 	bestIc := Result{ic: 0.039}
+
 	for _, pos := range permsPosition {
 		currentConfig := Config{
-			Rotors:    []string{permsRotor.V1, permsRotor.V2, permsRotor.V3},
-			Position:  []string{pos.V1, pos.V2, pos.V3},
-			Rings:     []int{1, 1, 1},
-			Plugboard: []string{"AB", "CD"},
-			Reflector: "B"}
+			Rotors:   []string{permsRotor.V1, permsRotor.V2, permsRotor.V3},
+			Position: []string{pos.V1, pos.V2, pos.V3},
+			Rings:    []int{1, 14, 18},
+			//Plugboard: []string{"DR", "JX", "FW", "HS", "CL", "MU", "GY", "KV", "QZ", "BP"},
+			Reflector: reflector}
 		text := EnigmaSim(currentConfig, cipher)
 
 		ic := Ic(text)
 
 		if ic > bestIc.ic {
 			bestIc = Result{config: currentConfig, ic: ic, text: text}
+			outputIc <- bestIc
 		}
 	}
-	outputIc <- bestIc
+
 }
 func crack(cipher string) {
 	permsRotors := genAllRotors()
 	outputIc := make(chan Result)
+	defer close(outputIc)
+
 	bestIc := Result{ic: 0.039}
-	for _, n := range permsRotors {
-		go calculateIc(cipher, n, outputIc)
+	for _, r := range "BC" {
+		for _, n := range permsRotors {
+			go calculateIc(cipher, string(r), n, outputIc)
+		}
 	}
 
-	for i := 0; i < 60; i++ {
-		ic := <-outputIc
+	for ic := range outputIc {
+
 		if ic.ic > bestIc.ic {
 			bestIc = ic
+			fmt.Println(bestIc.config, bestIc.ic)
 		}
 
 	}
 
-	fmt.Println(bestIc.config, bestIc.text)
 }
 
 func main() {

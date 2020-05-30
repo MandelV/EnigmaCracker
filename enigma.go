@@ -13,6 +13,10 @@ type Config struct {
 	Reflector string
 }
 
+func cleanText(cipher *string) {
+	*cipher = enigma.SanitizePlaintext(*cipher)
+}
+
 //EnigmaSim Simulation of an Enigma
 func EnigmaSim(config Config, cipher string) string {
 
@@ -26,6 +30,6 @@ func EnigmaSim(config Config, cipher string) string {
 
 	machine := enigma.NewEnigma(conf, config.Reflector, config.Plugboard)
 
-	return machine.EncodeString(enigma.SanitizePlaintext(cipher))
+	return machine.EncodeString(cipher)
 
 }
