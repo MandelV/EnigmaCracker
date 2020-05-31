@@ -19,6 +19,31 @@ func (values ValuesString) toString() string {
 	return values.V1 + " " + values.V2 + " " + values.V3
 }
 
+func genPlugboard() []ValuesString {
+	product, _ := combinations.NewPermutation(positions, 2)
+
+	var values []ValuesString
+
+	testIfExist := func(v1, v2 string) bool {
+		for i := 0; i < len(values); i++ {
+			if v2 == values[i].V1 && v1 == values[i].V2 {
+				return true
+			}
+		}
+		return false
+	}
+	for product.Next() {
+		v1 := product.Value()[0].(string)
+		v2 := product.Value()[1].(string)
+
+		if !testIfExist(v1, v2) {
+			values = append(values, ValuesString{V1: v1, V2: v2})
+		}
+
+	}
+	return values
+}
+
 //ValuesInt :
 type ValuesInt struct {
 	V1 int
