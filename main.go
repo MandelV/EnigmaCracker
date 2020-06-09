@@ -33,7 +33,7 @@ func calculateIc(cipher, reflector string, permsRotor ValuesString, outputIc cha
 		currentConfig := Config{
 			Rotors:   []string{permsRotor.V1, permsRotor.V2, permsRotor.V3},
 			Position: []string{pos.V1, pos.V2, pos.V3},
-			Rings:    []int{15, 14, 18}, //15 14 18
+			Rings:    []int{1, 14, 18}, //15 14 18
 			/*Plugboard: []string{"AB"},*/
 			Reflector: reflector}
 		text := EnigmaSim(currentConfig, cipher)
